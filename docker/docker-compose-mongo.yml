@@ -1,0 +1,39 @@
+services:
+
+  watchmen-ui:
+    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-web-client:latest
+    volumes:
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+    ports:
+      - 3030:80
+  my-mongodb:
+    image: mongo:latest
+    container_name: my-mongodb
+    ports:
+      - 27019:27017
+    volumes:
+      - ./mongo/seed.js:/docker-entrypoint-initdb.d/seed.js
+  watchmen-backend:
+    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-matryoshka-doll:latest
+    #    image: watchmen-backend
+    container_name: watchmen-backend
+    ports:
+      - 8000:80
+    environment:
+      PROJECT_NAME: matryoshka
+      STORAGE_ENGINE: mongo
+      MONGO_HOST: my-mongodb
+      MONGO_PORT: 27017
+      SUPER_USER : imma-super
+      MONGO_DATABASE: watchmen
+      DEFAULT_DATA_ZONE_ON: "True"
+      PRESTO_ON: 'False'
+    volumes:
+      - "./watchmen-doll/log/rotating.log:/app/temp/rotating.log"
+
+
+
+
+
+
+
