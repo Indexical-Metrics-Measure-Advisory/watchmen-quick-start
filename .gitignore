@@ -122,10 +122,6 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
-test/
-/test
-docker/
-/docker
 
 # mypy
 .mypy_cache/
@@ -136,10 +132,3 @@ dmypy.json
 .pyre/
 .idea/vcs.xml
 pdf/test.pdf
-
-test_folder
-
-
-
-
-pdf/report.pdf

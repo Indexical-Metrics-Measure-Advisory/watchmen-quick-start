@@ -1,0 +1,84 @@
+services:
+
+  watchmen-ui:
+    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-web-client:13.1.0
+    volumes:
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+    ports:
+      - 3030:80
+
+  watchmen-backend:
+    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-matryoshka-doll:13.1.7
+    container_name: watchmen-backend
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+
+    ports:
+      - 8000:80
+    environment:
+      PROJECT_NAME: matryoshka
+      STORAGE_ENGINE: mysql
+      MYSQL_HOST: mysqldb
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: admin-pwd
+      MYSQL_DATABASE: watchmen
+      PRESTO_HOST: trino
+      PRESTO_PORT: 8080
+      #PRESTO_USER=bv_dwh_stg
+      #PRESTO_CATALOG=oracle
+      #PRESTO_SCHEMA=bv_dwh_stg
+      PRESTO_USER: the-user
+      PRESTO_CATALOG: mysql
+      PRESTO_SCHEMA: watchmen
+      PRESTO_ON: 'True'
+      DEFAULT_DATA_ZONE_ON: 'True'
+#      MULTIPLE_DATA_SOURCE: 'True'
+    volumes:
+      - "./watchmen-doll/log/rotating.log:/app/temp/rotating.log"
+
+  mysqldb:
+    image: mysql:5.7
+    restart: always
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--lower_case_table_names=1','--character-set-client-handshake=false']
+    environment:
+      MYSQL_DATABASE: 'watchmen'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'admin'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'admin'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'admin-pwd'
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3309:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    volumes:
+      - type: bind
+        source: ./mysql/
+        target: /docker-entrypoint-initdb.d/
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+
+  trino:
+    #    hostname: trino
+    image: 'trinodb/trino'
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    ports:
+      - '8088:8080'
+    volumes:
+      - type: bind
+        source: ./presto/mysql/etc/catalog
+        target: /etc/trino/catalog
+
+
+
+
+
+

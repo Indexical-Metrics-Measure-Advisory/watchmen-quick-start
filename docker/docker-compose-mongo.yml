@@ -30,6 +30,20 @@ services:
       PRESTO_ON: 'False'
     volumes:
       - "./watchmen-doll/log/rotating.log:/app/temp/rotating.log"
+  presto:
+    #    hostname: trino
+    image: 'trinodb/trino'
+    ports:
+      - '8088:8080'
+    volumes:
+      - ./example/etc/catalog:/usr/local/trino/etc/catalog
+#    volumes:
+#      #      - ./mysql/etc:/usr/lib/trino/etc
+#      - type: bind
+#        source: ./mysql/etc
+#        target: /ext/trino
+
+
 
 
 
