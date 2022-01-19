@@ -1,14 +1,14 @@
 services:
 
   watchmen-ui:
-    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-web-client:13.1.0
+    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-web-client:15.2.7
     volumes:
       - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
     ports:
       - 3030:80
 
   watchmen-backend:
-    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-matryoshka-doll:13.1.7
+    image: ghcr.io/indexical-metrics-measure-advisory/watchmen-matryoshka-doll:15.2.7
     container_name: watchmen-backend
     depends_on:
       mysqldb:

@@ -1,4 +1,5 @@
-CREATE TABLE CONSOLE_DASHBOARDS (
+CREATE TABLE CONSOLE_DASHBOARDS
+(
   dashboardid varchar(60) NOT NULL,
   name varchar(50) DEFAULT NULL,
   reports json DEFAULT NULL,
@@ -13,9 +14,9 @@ CREATE TABLE CONSOLE_DASHBOARDS (
 
 CREATE TABLE CONSOLE_SPACES
 (
+  connectid     varchar(60) NOT NULL,
   spaceid       varchar(60) NOT NULL,
   name          varchar(50) DEFAULT NULL,
-  connectid     varchar(60) NOT NULL,
   type          varchar(10) DEFAULT NULL,
   lastvisittime datetime DEFAULT NULL,
   subjects      json DEFAULT NULL,
@@ -89,7 +90,7 @@ CREATE TABLE ENUMS
 (
   enumid       varchar(60) NOT NULL,
   name         varchar(50) NOT NULL,
-  description  varchar(25) DEFAULT NULL,
+  description  varchar(250) DEFAULT NULL,
   parentenumid varchar(60) DEFAULT NULL,
   items        json DEFAULT NULL,
   createtime   varchar(50) DEFAULT NULL,
@@ -108,7 +109,7 @@ CREATE TABLE PIPELINES
   conditional   varchar(5) DEFAULT NULL,
   enabled       varchar(5) DEFAULT NULL,
   `on`            json DEFAULT NULL,
-  createtime    varchar(25) DEFAULT NULL,
+  createtime    varchar(50) DEFAULT NULL,
 --  last_modified datetime DEFAULT NULL,
   lastmodified  datetime DEFAULT NULL,
   tenantid      varchar(50) NOT NULL,
@@ -122,7 +123,7 @@ CREATE TABLE PIPELINE_GRAPH
   name         varchar(50) not null,
   topics       json DEFAULT NULL,
   lastmodified datetime DEFAULT NULL,
-  createtime   varchar(25) DEFAULT NULL,
+  createtime   varchar(50) DEFAULT NULL,
   tenantid      varchar(50) NOT NULL,
   PRIMARY KEY (`pipelinegraphid`)
 );
@@ -133,7 +134,8 @@ CREATE TABLE SPACES
   topicids      json DEFAULT NULL,
   groupids      json DEFAULT NULL,
   name          varchar(50) DEFAULT NULL,
-  description   varchar(50) DEFAULT NULL,
+  description   varchar(250) DEFAULT NULL,
+  filters       json DEFAULT NULL,
   createtime    varchar(50) DEFAULT NULL,
   lastmodified  datetime DEFAULT NULL,
   tenantid varchar(50) NOT NULL,
@@ -146,7 +148,7 @@ CREATE TABLE TOPICS
   name          varchar(50) NOT NULL,
   kind          varchar(10) DEFAULT NULL,
   type          varchar(10) DEFAULT NULL,
-  description   varchar(50) DEFAULT NULL,
+  description   varchar(250) DEFAULT NULL,
   factors       json DEFAULT NULL,
   createtime    varchar(50) DEFAULT NULL,
   tenantid      varchar(50) NOT NULL,
@@ -174,7 +176,7 @@ CREATE TABLE USER_GROUPS
 (
     usergroupid  varchar(60) NOT NULL,
     name         varchar(50) NOT NULL,
-    description  varchar(45) DEFAULT NULL,
+    description  varchar(250) DEFAULT NULL,
     userids      json        DEFAULT NULL,
     spaceids     json        DEFAULT NULL,
     createtime   varchar(50) DEFAULT NULL,
@@ -199,7 +201,9 @@ create table REPORTS
   name          varchar(50),
   indicators    json,
   dimensions    json,
-  description   varchar(50),
+  funnels       json,
+  filters       json,
+  description   varchar(250),
   rect          json,
   chart         json,
   createdat     varchar(50),
@@ -207,6 +211,9 @@ create table REPORTS
   lastmodified  datetime,
   tenantid      varchar(50) NOT NULL,
   createtime    varchar(50),
+  simulating    boolean DEFAULT false,
+  simulateData  json,
+  simulateThumbnail  mediumtext,
   PRIMARY KEY (`reportid`)
 );
 
@@ -243,6 +250,79 @@ create table DATA_SOURCES
   tenantid     varchar(50) NOT NULL,
   PRIMARY KEY (`datasourceid`)
 );
+
+create table EXTERNAL_WRITER
+(
+  writerid        varchar(50) NOT NULL,
+  writercode      varchar(50) NOT NULL,
+  type       varchar(50) NOT NULL,
+  pat     varchar(50) DEFAULT NULL,
+  tenantId         varchar(50) DEFAULT NULL,
+  url         varchar(50) DEFAULT NULL,
+  lastmodified datetime,
+  createtime   varchar(50),
+  PRIMARY KEY (`writerid`)
+);
+
+create table KEY_STORES
+(
+  tenantId         varchar(50) NOT NULL,
+  keyType         varchar(50) NOT NULL,
+  params         json,
+  lastmodified datetime,
+  createtime   varchar(50),
+  PRIMARY KEY (`tenantId`)
+);
+
+
+create table FACTOR_INDEX
+(
+  factorindexid   varchar(50) NOT NULL,
+  factorid         varchar(50) NOT NULL,
+  tenantid         varchar(50) NOT NULL,
+  topicid         varchar(50) NOT NULL,
+  name         varchar(60) NOT NULL,
+  label         varchar(60) ,
+  topicname         varchar(60) NOT NULL,
+  description         varchar(100),
+  type              varchar(30) NOT NULL,
+  lastmodified datetime,
+  createtime   varchar(50),
+  PRIMARY KEY (`factorindexid`)
+);
+
+
+create table PIPELINE_INDEX
+(
+  pipelineindexid   varchar(50) NOT NULL,
+  factorid         varchar(50) NOT NULL,
+  topicid         varchar(50) NOT NULL,
+  pipelineid         varchar(50) NOT NULL,
+  stageid         varchar(50) NOT NULL,
+  unitid         varchar(50) NOT NULL,
+  actionid         varchar(50) NOT NULL,
+  mappingtofactorid         varchar(50) ,
+  mappingtotopicid         varchar(50) ,
+  sourcefromfactorid         varchar(50) ,
+  sourcefromtopicid         varchar(50),
+  stagename         varchar(60) ,
+  pipelinename         varchar(60) ,
+  unitname         varchar(60) ,
+  reftype              varchar(30) ,
+  lastmodified datetime,
+  tenantid         varchar(50) NOT NULL,
+  createtime   varchar(50),
+  PRIMARY KEY (`pipelineindexid`)
+);
+
+CREATE TABLE SNOWFLAKE_WORKERID(
+  ip VARCHAR(100) NOT NULL,
+  processid VARCHAR(40) NOT NULL,
+  workerid INT NULL,
+  regdate DATETIME NULL,
+  PRIMARY KEY (`ip`, `processid`)
+);
+
 
 
 

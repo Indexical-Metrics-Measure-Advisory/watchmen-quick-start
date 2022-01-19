@@ -132,3 +132,5 @@ dmypy.json
 .pyre/
 .idea/vcs.xml
 pdf/test.pdf
+/docker/presto/mysql/etc/catalog/data_source.properties
+/docker/presto/mysql/etc/catalog/zema.properties
