@@ -25,12 +25,9 @@ services:
       META_STORAGE_USER_NAME: root
       META_STORAGE_PASSWORD: admin-pwd
       META_STORAGE_NAME: watchmen
-      TRINO_HOST: trino
-      PYTHONUNBUFFERED: "1"
-      USE_STORAGE_DIRECTLY: "false"
+      USE_STORAGE_DIRECTLY: "true"
       REPLACE_TOPIC_TO_STORAGE: "true"
       SYNC_TOPIC_TO_STORAGE: "true"
-      TRINO_PORT: 8080
     volumes:
       - "./watchmen-doll/log/rotating.log:/app/temp/rotating.log"
 
@@ -60,18 +57,19 @@ services:
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
 
-  trino:
-    #    hostname: trino
-    image: 'trinodb/trino'
-    depends_on:
-      mysqldb:
-        condition: service_healthy
-    ports:
-      - '8088:8080'
-    volumes:
-      - type: bind
-        source: ./presto/mysql/etc/catalog
-        target: /etc/trino/catalog
+## ref to https://imma-watchmen.com/docs/16.0/installation/config USE_STORAGE_DIRECTLY
+#  trino:
+#    #    hostname: trino
+#    image: 'trinodb/trino'
+#    depends_on:
+#      mysqldb:
+#        condition: service_healthy
+#    ports:
+#      - '8088:8080'
+#    volumes:
+#      - type: bind
+#        source: ./presto/mysql/etc/catalog
+#        target: /etc/trino/catalog
 
 
 
