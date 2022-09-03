@@ -32,7 +32,6 @@ go to url localhost:3030
 DQC and indicator services are not included 
 ```
 
-
 This cannot be used in a production environment
 If you need to deploy the production environment, please refer to the document production environment deployment
 https://imma-watchmen.com/docs/16.0/installation/deploy#production-environment

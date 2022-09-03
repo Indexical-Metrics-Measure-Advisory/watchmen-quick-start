@@ -34,9 +34,11 @@ services:
   mysqldb:
     image: mysql:8.0.21
     restart: always
+    cap_add:
+      - SYS_NICE
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--lower_case_table_names=1','--character-set-client-handshake=false']
     environment:
-      MYSQL_DATABASE: 'watchmen'
+      MYSQL_DATABASE: watchmen
       # So you don't have to use root, but you can if you like
       MYSQL_USER: 'admin'
        # You can use whatever password you like
